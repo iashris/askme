@@ -1,1 +1,79 @@
-<h1>hello</h1>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Query Page</title>
+    <style>
+      body {
+        background-color: #f5deb3;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+      }
+      #question-area {
+        width: 80%;
+        height: 100px;
+        font-size: 18px;
+        padding: 10px;
+      }
+      #submit-btn {
+        display: block;
+        margin: 20px auto;
+        padding: 10px 20px;
+        font-size: 20px;
+        cursor: pointer;
+      }
+      #response {
+        margin-top: 30px;
+        font-size: 20px;
+        text-align: center;
+      }
+      #loader {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <textarea
+      id="question-area"
+      placeholder="Enter your question here..."
+    ></textarea>
+    <button id="submit-btn">Submit</button>
+    <div id="response"></div>
+    <div id="loader">Loading...</div>
+
+    <script>
+      const questionArea = document.getElementById("question-area");
+      const submitBtn = document.getElementById("submit-btn");
+      const responseDiv = document.getElementById("response");
+      const loader = document.getElementById("loader");
+
+      submitBtn.addEventListener("click", function () {
+        const question = questionArea.value;
+        if (question) {
+          loader.style.display = "block";
+          responseDiv.textContent = "";
+          fetch(
+            `https://flask-production-a3d2.up.railway.app/query?question=${encodeURIComponent(
+              question
+            )}`
+          )
+            .then((res) => res.json())
+            .then((data) => {
+              loader.style.display = "none";
+              responseDiv.textContent = data.answer;
+            })
+            .catch((err) => {
+              loader.style.display = "none";
+              responseDiv.textContent = "An error occurred. Please try again.";
+            });
+        }
+      });
+    </script>
+  </body>
+</html>
